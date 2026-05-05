@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PDFParse } from "pdf-parse";
+import pdfParse from "pdf-parse";
 
 // Note: In a real production app with an API key, you would call your LLM here.
 // Since we don't have an API key, we simulate a rule-based AI keyword extraction and scoring.
@@ -83,10 +83,8 @@ export async function POST(req) {
     const buffer = Buffer.from(arrayBuffer);
 
     // Parse the PDF
-    const parser = new PDFParse({ data: buffer });
-    const result = await parser.getText();
-    const resumeText = result.text;
-    await parser.destroy();
+    const data = await pdfParse(buffer);
+    const resumeText = data.text;
 
     // Simulate AI delay for the UI experience
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -101,3 +99,4 @@ export async function POST(req) {
     return NextResponse.json({ error: "Failed to process the resume. Please ensure it is a valid PDF." }, { status: 500 });
   }
 }
+
